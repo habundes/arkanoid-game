@@ -30,6 +30,9 @@ const BLOCK_H = 22;
 const BLOCK_COLORS = ['red', 'cyan', 'green', 'magenta', 'yellow', 'hotpink'];
 
 const blocks = [];
+const explosions = [];
+
+const breakSound = new Audio('assets/sounds/break-sound.mp3');
 
 function initBlocks() {
   blocks.length = 0;
@@ -58,6 +61,7 @@ function resetGame() {
   state.phase = 'playing';
   state.lives = 3;
   state.score = 0;
+  explosions.length = 0;
   initBlocks();
   resetBall();
 }
@@ -168,6 +172,9 @@ function updateBlocks() {
     ) {
       b.alive = false;
       state.score += 10;
+      explosions.push({ x: b.x, y: b.y, color: b.color, startTime: performance.now(), frame: 0 });
+      breakSound.currentTime = 0;
+      breakSound.play();
 
       const overlapLeft   = ball.x + ball.radius - b.x;
       const overlapRight  = b.x + b.width - (ball.x - ball.radius);
@@ -185,11 +192,22 @@ function updateBlocks() {
   if (blocks.every(b => !b.alive)) state.phase = 'win';
 }
 
+function updateExplosions(now) {
+  for (const e of explosions) {
+    e.frame = Math.max(0, Math.floor((now - e.startTime) / (EXPLOSION_DURATION / 4)));
+  }
+  for (let i = explosions.length - 1; i >= 0; i--) {
+    if (explosions[i].frame >= 4) explosions.splice(i, 1);
+  }
+}
+
 function update() {
+  const now = performance.now();
   if (state.phase !== 'playing') return;
   updatePaddle();
   updateBall();
   updateBlocks();
+  updateExplosions(now);
 }
 
 function drawBlocks() {
@@ -232,10 +250,17 @@ function drawEndScreen(title) {
   ctx.fillText('Reiniciar', canvas.width / 2, BTN.y + 29);
 }
 
+function drawExplosions() {
+  for (const e of explosions) {
+    drawFrame(ctx, EXPLOSION_FRAMES[e.color][e.frame], e.x, e.y, 64, 32);
+  }
+}
+
 function draw() {
   ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   drawBlocks();
+  drawExplosions();
   drawPaddle();
   drawBall();
   drawHUD();
