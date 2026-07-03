@@ -34,6 +34,16 @@ const explosions = [];
 
 const breakSound = new Audio('assets/sounds/break-sound.mp3');
 
+// Unlock AudioContext on first user interaction (browser autoplay policy)
+function unlockAudio() {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  ctx.resume().then(() => ctx.close());
+  document.removeEventListener('keydown', unlockAudio);
+  document.removeEventListener('mousemove', unlockAudio);
+}
+document.addEventListener('keydown', unlockAudio);
+document.addEventListener('mousemove', unlockAudio);
+
 function initBlocks() {
   blocks.length = 0;
   const offsetX = (canvas.width - BLOCK_COLS * BLOCK_W) / 2;
@@ -230,8 +240,12 @@ function drawHUD() {
   ctx.font = '16px monospace';
   ctx.textAlign = 'left';
   ctx.fillText('SCORE: ' + state.score, 8, 20);
-  ctx.textAlign = 'right';
-  ctx.fillText('VIDAS: ' + state.lives, canvas.width - 8, 20);
+  const ballSize = 16;
+  const ballGap = 4;
+  for (let i = 0; i < state.lives; i++) {
+    const bx = canvas.width - 8 - ballSize - i * (ballSize + ballGap);
+    drawSprite(ctx, 'ball', bx, 4, ballSize, ballSize);
+  }
 }
 
 function drawEndScreen(title) {
