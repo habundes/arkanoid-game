@@ -1,6 +1,6 @@
 # SPEC 01 — MVP Arkanoid
 
-> **Estado:** Draft
+> **Estado:** Implemented
 > **Depende de:** —
 > **Fecha:** 2026-07-03
 > **Objetivo:** Crear un juego Arkanoid jugable en el navegador con un nivel, paddle controlable por ratón y teclado, 3 vidas, puntuación en pantalla y pantallas de Game Over y Victoria.

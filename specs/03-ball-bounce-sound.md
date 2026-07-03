@@ -1,6 +1,6 @@
 # SPEC 03 — Sonido de rebote de la bola
 
-> **Estado:** Draft
+> **Estado:** Implemented
 > **Depende de:** 01-mvp-arkanoid, 02-block-explosion
 > **Fecha:** 2026-07-03
 > **Objetivo:** Reproducir `ball-bounce.mp3` cada vez que la bola rebota en pared, techo o paddle, pero nunca cuando el impacto destruye un bloque.
@@ -56,15 +56,15 @@ let bouncedThisFrame = false; // se pone true en cada rebote pared/techo/paddle
 
 ## Criterios de aceptación
 
-- [ ] Al rebotar en la pared izquierda suena `ball-bounce.mp3`.
-- [ ] Al rebotar en la pared derecha suena `ball-bounce.mp3`.
-- [ ] Al rebotar en el techo suena `ball-bounce.mp3`.
-- [ ] Al rebotar en el paddle suena `ball-bounce.mp3`.
-- [ ] Al destruir un bloque suena solo `break-sound.mp3` y NO `ball-bounce.mp3`, aunque en ese mismo frame haya un rebote de pared/techo/paddle.
-- [ ] Rebotes sucesivos (en frames distintos) suenan cada uno de forma independiente.
-- [ ] El sonido respeta el desbloqueo de audio existente (no suena antes de la primera interacción del usuario).
-- [ ] El resto de la lógica del juego (paddle, bola, vidas, score, pausa, explosiones) no se ve afectada.
-- [ ] La página carga sin errores en consola.
+- [x] Al rebotar en la pared izquierda suena `ball-bounce.mp3`.
+- [x] Al rebotar en la pared derecha suena `ball-bounce.mp3`.
+- [x] Al rebotar en el techo suena `ball-bounce.mp3`.
+- [x] Al rebotar en el paddle suena `ball-bounce.mp3`.
+- [x] Al destruir un bloque suena solo `break-sound.mp3` y NO `ball-bounce.mp3`, aunque en ese mismo frame haya un rebote de pared/techo/paddle.
+- [x] Rebotes sucesivos (en frames distintos) suenan cada uno de forma independiente.
+- [x] El sonido respeta el desbloqueo de audio existente (no suena antes de la primera interacción del usuario).
+- [x] El resto de la lógica del juego (paddle, bola, vidas, score, pausa, explosiones) no se ve afectada.
+- [x] La página carga sin errores en consola.
 
 ## Decisiones
 

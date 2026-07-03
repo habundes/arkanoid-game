@@ -33,6 +33,7 @@ const blocks = [];
 const explosions = [];
 
 const breakSound = new Audio('assets/sounds/break-sound.mp3');
+const bounceSound = new Audio('assets/sounds/ball-bounce.mp3');
 
 // Unlock AudioContext on first user interaction (browser autoplay policy)
 function unlockAudio() {
@@ -124,6 +125,8 @@ function resetBall() {
 }
 
 function updateBall() {
+  let bounces = 0;
+
   ball.x += ball.vx;
   ball.y += ball.vy;
 
@@ -131,15 +134,18 @@ function updateBall() {
   if (ball.x - ball.radius < 0) {
     ball.x = ball.radius;
     ball.vx = Math.abs(ball.vx);
+    bounces++;
   } else if (ball.x + ball.radius > canvas.width) {
     ball.x = canvas.width - ball.radius;
     ball.vx = -Math.abs(ball.vx);
+    bounces++;
   }
 
   // Ceiling bounce
   if (ball.y - ball.radius < 0) {
     ball.y = ball.radius;
     ball.vy = Math.abs(ball.vy);
+    bounces++;
   }
 
   // Paddle collision
@@ -154,6 +160,7 @@ function updateBall() {
     ball.vy = -Math.abs(ball.vy);
     const offset = (ball.x - paddle.x) / halfPaddle;
     ball.vx = offset * 5;
+    bounces++;
   }
 
   // Ball lost
@@ -165,6 +172,8 @@ function updateBall() {
       resetBall();
     }
   }
+
+  return bounces;
 }
 
 function drawBall() {
@@ -172,6 +181,8 @@ function drawBall() {
 }
 
 function updateBlocks() {
+  let destroyed = false;
+
   for (const b of blocks) {
     if (!b.alive) continue;
     if (
@@ -181,6 +192,7 @@ function updateBlocks() {
       ball.y - ball.radius < b.y + b.height
     ) {
       b.alive = false;
+      destroyed = true;
       state.score += 10;
       explosions.push({ x: b.x, y: b.y, color: b.color, startTime: performance.now(), frame: 0 });
       breakSound.currentTime = 0;
@@ -200,6 +212,8 @@ function updateBlocks() {
   }
 
   if (blocks.every(b => !b.alive)) state.phase = 'win';
+
+  return destroyed;
 }
 
 function updateExplosions(now) {
@@ -215,8 +229,14 @@ function update() {
   const now = performance.now();
   if (state.phase !== 'playing') return;
   updatePaddle();
-  updateBall();
-  updateBlocks();
+  const bounces = updateBall();
+  const destroyed = updateBlocks();
+  if (!destroyed && bounces > 0) {
+    for (let i = 0; i < bounces; i++) {
+      bounceSound.currentTime = 0;
+      bounceSound.play();
+    }
+  }
   updateExplosions(now);
 }
 
