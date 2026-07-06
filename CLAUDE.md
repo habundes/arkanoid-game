@@ -4,25 +4,56 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project goal
 
-Build an Arkanoid game in pure HTML, CSS, and JavaScript — zero dependencies, runs in the browser. The game is **not yet implemented**; all code must be written from scratch.
+Build an Arkanoid game in pure HTML, CSS, and JavaScript — zero dependencies, runs in the browser.
+
+## Current state
+
+**Implemented specs (all merged to main):**
+- `01-mvp-arkanoid` — Canvas game loop, paddle (mouse + keyboard), ball physics, 60 blocks, HUD, pause, Game Over, Victory.
+- `02-block-explosion` — Sprite-based explosion animation when a block is destroyed.
+- `03-ball-bounce-sound` — Audio feedback on ball bounce and block break.
+- `04-multiple-levels` — 10 declarative levels (`levels.js`), auto-advance, score/lives preserved, ball speed +8%/level, level shown in HUD.
 
 ## Architecture
 
-- Single-page app: one `index.html`, one CSS file, one main JS file.
+- Single-page app: `index.html`, `style.css`, `game.js`, `levels.js`.
 - **No build step, no bundler, no npm.** Open `index.html` directly in a browser to run.
-- `assets/spritesheet-breakout.png` — the sole sprite atlas for all visuals (paddle, ball, blocks, explosions).
-- `assets/spritesheet.js` — sprite loader and drawing helpers (`loadSpritesheet`, `drawSprite`, `drawFrame`). Include this before the main game script. Sprites are referenced by name (e.g. `"paddle"`, `"ball"`, `"block_red"`) or by explicit frame coords.
+- Script load order in `index.html`: `assets/spritesheet.js` → `levels.js` → `game.js`.
+- `assets/spritesheet-breakout.png` — sole sprite atlas (paddle, ball, blocks, explosions).
 - `assets/sounds/` — `ball-bounce.mp3`, `break-sound.mp3`.
 
-### Sprite system
+### Sprite system (`assets/spritesheet.js`)
 
-`spritesheet.js` exposes:
 - `loadSpritesheet(cb)` — async load; calls `cb` when ready.
-- `drawSprite(ctx, name, x, y, w, h)` — draw a named sprite. Block names follow the pattern `block_<color>` (e.g. `block_red`, `block_cyan`).
-- `drawFrame(ctx, frame, x, y, w, h)` — draw an arbitrary `{sx, sy, sw, sh}` frame object. Used for explosion animation frames (`EXPLOSION_FRAMES[color][i]`).
+- `drawSprite(ctx, name, x, y, w, h)` — draw a named sprite. Block names: `block_<color>`.
+- `drawFrame(ctx, frame, x, y, w, h)` — draw a `{sx, sy, sw, sh}` frame. Used for explosion frames.
 
 Available block colors: `gray`, `red`, `yellow`, `cyan`, `magenta`, `hotpink`, `green`.
-Explosion animation: 4 frames per color, duration constant `EXPLOSION_DURATION = 150` ms.
+Explosion: 4 frames per color, `EXPLOSION_DURATION = 150` ms.
+
+### Game state (`game.js`)
+
+```js
+const state = {
+  phase: 'playing', // 'playing' | 'paused' | 'gameover' | 'win'
+  lives: 3,
+  score: 0,
+  level: 0,         // 0-indexed; HUD shows level + 1
+};
+```
+
+Ball base speed: ±4 px/frame. Speed factor per level: `1 + 0.08 * state.level`.
+
+### Level system (`levels.js`)
+
+```js
+// Each level: array of strings, 10 chars wide, variable rows.
+// R=red C=cyan G=green M=magenta Y=yellow H=hotpink  '.'=empty cell
+const LEVELS = [ /* 10 layouts */ ];
+const CHAR_COLORS = { R:'red', C:'cyan', G:'green', M:'magenta', Y:'yellow', H:'hotpink' };
+```
+
+`initBlocks()` reads `LEVELS[state.level]`; unrecognized chars treated as empty.
 
 ## Spec-driven workflow
 
