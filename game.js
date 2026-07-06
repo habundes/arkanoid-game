@@ -5,6 +5,7 @@ const state = {
   phase: 'playing', // 'playing' | 'paused' | 'gameover' | 'win'
   lives: 3,
   score: 0,
+  level: 7,         // index 0–9 into LEVELS
 };
 
 const paddle = {
@@ -49,15 +50,17 @@ function initBlocks() {
   blocks.length = 0;
   const offsetX = (canvas.width - BLOCK_COLS * BLOCK_W) / 2;
   const offsetY = 48;
-  for (let row = 0; row < BLOCK_ROWS; row++) {
-    const color = BLOCK_COLORS[row % BLOCK_COLORS.length];
-    for (let col = 0; col < BLOCK_COLS; col++) {
+  const layout = LEVELS[state.level];
+  for (let row = 0; row < layout.length; row++) {
+    for (let col = 0; col < layout[row].length; col++) {
+      const ch = layout[row][col];
+      if (ch === '.' || !CHAR_COLORS[ch]) continue;
       blocks.push({
         x: offsetX + col * BLOCK_W,
         y: offsetY + row * BLOCK_H,
         width: BLOCK_W,
         height: BLOCK_H,
-        color,
+        color: CHAR_COLORS[ch],
         alive: true,
       });
     }
@@ -72,6 +75,7 @@ function resetGame() {
   state.phase = 'playing';
   state.lives = 3;
   state.score = 0;
+  state.level = 0;
   explosions.length = 0;
   initBlocks();
   resetBall();
@@ -120,8 +124,9 @@ function drawPaddle() {
 function resetBall() {
   ball.x = canvas.width / 2;
   ball.y = paddle.y - ball.radius - 1;
-  ball.vx = 4 * (Math.random() < 0.5 ? 1 : -1);
-  ball.vy = -4;
+  const speedFactor = 1 + 0.08 * state.level;
+  ball.vx = 4 * speedFactor * (Math.random() < 0.5 ? 1 : -1);
+  ball.vy = -4 * speedFactor;
 }
 
 function updateBall() {
@@ -211,7 +216,15 @@ function updateBlocks() {
     }
   }
 
-  if (blocks.every(b => !b.alive)) state.phase = 'win';
+  if (blocks.every(b => !b.alive)) {
+    if (state.level < 9) {
+      state.level++;
+      initBlocks();
+      resetBall();
+    } else {
+      state.phase = 'win';
+    }
+  }
 
   return destroyed;
 }
@@ -260,6 +273,9 @@ function drawHUD() {
   ctx.font = '16px monospace';
   ctx.textAlign = 'left';
   ctx.fillText('SCORE: ' + state.score, 8, 20);
+  ctx.textAlign = 'center';
+  ctx.fillText('Nivel: ' + (state.level + 1), canvas.width / 2, 20);
+  ctx.textAlign = 'left';
   const ballSize = 16;
   const ballGap = 4;
   for (let i = 0; i < state.lives; i++) {

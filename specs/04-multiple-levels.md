@@ -1,6 +1,6 @@
 # SPEC 04 — Múltiples niveles
 
-> **Estado:** Draft
+> **Estado:** Implemented
 > **Depende de:** 01-mvp-arkanoid, 02-block-explosion, 03-ball-bounce-sound
 > **Fecha:** 2026-07-03
 > **Objetivo:** Añadir 10 niveles con layouts declarativos y huecos, que avanzan automáticamente conservando score y vidas, con velocidad de bola creciente y número de nivel visible en el HUD.
@@ -93,21 +93,21 @@ Convenciones:
 
 ## Criterios de aceptación
 
-- [ ] `levels.js` carga sin errores y `LEVELS.length === 10`.
-- [ ] `index.html` incluye `levels.js` antes de `game.js`.
-- [ ] El juego arranca en el nivel 1 (`state.level === 0`).
-- [ ] Cada nivel dibuja los bloques según su layout, con las celdas `.` vacías.
-- [ ] Al menos un nivel tiene huecos internos o forma no rectangular.
-- [ ] Al romper todos los bloques de un nivel (no siendo el último) se pasa automáticamente al siguiente.
-- [ ] Al avanzar de nivel, el score y las vidas se conservan.
-- [ ] La bola se reposiciona al avanzar de nivel.
-- [ ] La velocidad de la bola en el nivel 1 es la actual (±4 por componente).
-- [ ] La velocidad de la bola aumenta un 8% por nivel respecto a la base.
-- [ ] Tras romper todos los bloques del nivel 10 aparece la pantalla de Victoria.
-- [ ] Perder las 3 vidas muestra Game Over en cualquier nivel.
-- [ ] En Game Over, "Reiniciar" vuelve al nivel 1 con score 0 y 3 vidas.
-- [ ] El HUD muestra `Nivel: N` (1–10) actualizado al avanzar y al reiniciar.
-- [ ] La página carga sin errores en consola.
+- [x] `levels.js` carga sin errores y `LEVELS.length === 10`.
+- [x] `index.html` incluye `levels.js` antes de `game.js`.
+- [x] El juego arranca en el nivel 1 (`state.level === 0`).
+- [x] Cada nivel dibuja los bloques según su layout, con las celdas `.` vacías.
+- [x] Al menos un nivel tiene huecos internos o forma no rectangular.
+- [x] Al romper todos los bloques de un nivel (no siendo el último) se pasa automáticamente al siguiente.
+- [x] Al avanzar de nivel, el score y las vidas se conservan.
+- [x] La bola se reposiciona al avanzar de nivel.
+- [x] La velocidad de la bola en el nivel 1 es la actual (±4 por componente).
+- [x] La velocidad de la bola aumenta un 8% por nivel respecto a la base.
+- [x] Tras romper todos los bloques del nivel 10 aparece la pantalla de Victoria.
+- [x] Perder las 3 vidas muestra Game Over en cualquier nivel.
+- [x] En Game Over, "Reiniciar" vuelve al nivel 1 con score 0 y 3 vidas.
+- [x] El HUD muestra `Nivel: N` (1–10) actualizado al avanzar y al reiniciar.
+- [x] La página carga sin errores en consola.
 
 ## Decisiones
 
