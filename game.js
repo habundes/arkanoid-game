@@ -11,7 +11,7 @@ const state = {
 const paddle = {
   x: canvas.width / 2,
   y: canvas.height - 30,
-  width: 162,
+  width: 112,
   height: 14,
   speed: 6,
 };
@@ -69,7 +69,7 @@ function initBlocks() {
 
 const keys = { ArrowLeft: false, ArrowRight: false };
 
-const BTN = { x: 220, y: 300, width: 200, height: 44 };
+const BTN = { x: 300, y: 380, width: 200, height: 44 };
 
 function resetGame() {
   state.phase = 'playing';
