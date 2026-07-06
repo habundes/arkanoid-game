@@ -5,7 +5,7 @@ const state = {
   phase: 'playing', // 'playing' | 'paused' | 'gameover' | 'win'
   lives: 3,
   score: 0,
-  level: 7,         // index 0–9 into LEVELS
+  level: 0,         // index 0–9 into LEVELS
 };
 
 const paddle = {
